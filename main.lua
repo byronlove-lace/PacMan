@@ -10,6 +10,9 @@ function love.load()
         pacman.x = 100
         pacman.y = 200
         pacman.mouth = {27.5, 332.5}
+        pacman.bitetimer = 1
+        pacman.speed = 3
+        pacman.moving = false
 
         _G.boarder = {
                 left = {1, 1, 1, 600},
@@ -24,22 +27,19 @@ function love.load()
                 eaten = false
         }
 
+        _G.ghost = {
+                sprite = love.graphics.newImage('sprites/gosth.png')
+        }
 
         love.graphics.setBackgroundColor(0.5, 0.5, 1, 1)
 end
 
 function love.update(dt)
-        number = number + 1
 
---[[
-        if pacman.mouth[1] == open_start then
-                pacman.mouth[1] = closed_start
-                pacman.mouth[2] = closed_end
-        elseif pacman.mouth[1] == closed_start then
-                pacman.mouth[1] = open_start
-                pacman.mouth[2] = open_end
-        end
---]]
+        number = number + 1
+        pacman.bitetimer = pacman.bitetimer + 1
+        pacman.position = {pacman.x, pacman.y}
+
 
         if love.keyboard.isDown("d") then
                 pacman.mouth[1] = 27.5 
@@ -48,7 +48,7 @@ function love.update(dt)
                 if pacman.x >= 750 then
                         pacman.x = 750
                 else
-                        pacman.x = pacman.x + 3
+                        pacman.x = pacman.x + pacman.speed
                 end
         end
 
@@ -59,10 +59,11 @@ function love.update(dt)
                 if pacman.x <= 50 then
                         pacman.x = 50
                 else
-                        pacman.x = pacman.x - 3
+                        pacman.x = pacman.x - pacman.speed
                 end
 
         end
+
         if love.keyboard.isDown("w") then
                 pacman.mouth[1] = 27.5 + 270
                 pacman.mouth[2] = 332.5 + 270
@@ -70,7 +71,7 @@ function love.update(dt)
                 if pacman.y <= 50 then
                         pacman.y = 50
                 else
-                        pacman.y = pacman.y - 3
+                        pacman.y = pacman.y - pacman.speed
                 end
         end
 
@@ -81,7 +82,21 @@ function love.update(dt)
                 if pacman.y >= 550 then
                         pacman.y = 550
                 else
-                        pacman.y = pacman.y + 3
+                        pacman.y = pacman.y + pacman.speed
+                end
+        end
+
+        if pacman.position[1] ~= pacman.x or pacman.position[2] ~= pacman.y then
+                pacman.moving = true
+        else
+                pacman.moving = false
+        end
+
+        if pacman.moving == true then
+                if pacman.bitetimer >= 10 then
+                        pacman.mouth[1] = 1
+                        pacman.mouth[2] = 360
+                        pacman.bitetimer = 1
                 end
         end
 end
