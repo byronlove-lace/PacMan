@@ -28,10 +28,37 @@ function love.load()
         }
 
         _G.ghost = {
-                sprite = love.graphics.newImage('sprites/gosth.png')
+                x = 300,
+                y = 200,
+                sprite = {
+                image = love.graphics.newImage('sprites/gosth.png'),
+                sheet_width = 150,
+                sheet_height = 200,
+                height = 200 / 8,
+                width = 150 / 6,
         }
+                quads = {
+                        stationary = {},
+                        left = {},
+                        right = {},
+                        up = {},
+                        down = {}
+                }
+}
 
         love.graphics.setBackgroundColor(0.5, 0.5, 1, 1)
+
+        for i = 1, ghost.sprite.sheet_height, ghost.sprite.height do  
+                quads.stationary[i] = love.graphics.newQuad(
+                ghost.x, 
+                ghost.y, 
+                ghost.sprite.sheet_width, 
+                ghost.sprite.sheet_height, 
+                ghost.sprite.width, 
+                ghost.sprite.height
+                )
+        end
+
 end
 
 function love.update(dt)
@@ -61,7 +88,6 @@ function love.update(dt)
                 else
                         pacman.x = pacman.x - pacman.speed
                 end
-
         end
 
         if love.keyboard.isDown("w") then
@@ -113,8 +139,8 @@ function love.draw()
                 love.graphics.rectangle("fill", food.x, food.y, 35, 35)
         end
 
-        if pacman.x >= food.x + 5 then
-                if pacman.y >= food.y + 5 then
+        if pacman.x >= food.x + 10 and pacman.x <= food.x + 10 then
+                if pacman.y >= food.y + 5 and pacman.y <= food.y + 10 then
                         food.eaten = true
                 end
         end
