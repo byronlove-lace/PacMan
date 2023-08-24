@@ -58,44 +58,17 @@ function love.load()
         love.graphics.setBackgroundColor(0.5, 0.5, 1, 1)
 
         local counter = 1
-        for i = 0, ghost.sprite.height * 4, ghost.sprite.height do 
-                table.insert(ghost.quads.right, counter, love.graphics.newQuad(
-                ghost.sprite.width, 
-                i, 
-                ghost.sprite.sheet_width, 
-                ghost.sprite.sheet_height, 
-                ghost.sprite.width, 
-                ghost.sprite.height
-                ))
-
-                table.insert(ghost.quads.left, counter, love.graphics.newQuad(
-                ghost.sprite.width * 2, 
-                i, 
-                ghost.sprite.sheet_width, 
-                ghost.sprite.sheet_height, 
-                ghost.sprite.width, 
-                ghost.sprite.height
-                ))
-
-                table.insert(ghost.quads.down, counter, love.graphics.newQuad(
-                ghost.sprite.width * 3, 
-                i, 
-                ghost.sprite.sheet_width, 
-                ghost.sprite.sheet_height, 
-                ghost.sprite.width, 
-                ghost.sprite.height
-                ))
-
-                table.insert(ghost.quads.up, counter, love.graphics.newQuad(
-                ghost.sprite.width * 4, 
-                i, 
-                ghost.sprite.sheet_width, 
-                ghost.sprite.sheet_height, 
-                ghost.sprite.width, 
-                ghost.sprite.height
-                ))
-
-                counter = counter + 1
+        for i = 1, 4 do
+                for j = 1, 4 do
+                        counter = counter + 1
+                        ghost.quads[counter] = love.graphics.newQuad(
+                        ghost.sprite.width * (i - 1), 
+                        ghost.sprite.height * (j - 1), 
+                        ghost.sprite.width, 
+                        ghost.sprite.height, 
+                        ghost.sprite.sheet_width,
+                        ghost.sprite.sheet_height)
+                end
         end
 end
 
@@ -174,9 +147,7 @@ function love.draw()
 
         if not food.eaten then
                 love.graphics.setColor(1, 1, 1)
-                love.graphics.rectangle("fill", food.x, food.y, 35, 35)
-        end
-
+                love.graphics.rectangle("fill", food.x, food.y, 35, 35) end
         if pacman.x >= food.x + 10 and pacman.x <= food.x + 10 then
                 if pacman.y >= food.y + 5 and pacman.y <= food.y + 10 then
                         food.eaten = true
@@ -195,6 +166,6 @@ function love.draw()
         pacman.mouth[2] * (math.pi / 180)
         )
 
-        love.graphics.draw(ghost.sprite.image, ghost.quads.right[1], ghost.x, ghost.y)
+        love.graphics.draw(ghost.sprite.image, ghost.quads[2], ghost.x, ghost.y)
 end
 
