@@ -35,30 +35,68 @@ function love.load()
                 sheet_width = 150,
                 sheet_height = 200,
                 height = 200 / 8,
-                width = 150 / 6,
-        }
+                width = 150 / 6
+        },
                 quads = {
-                        stationary = {},
-                        left = {},
                         right = {},
-                        up = {},
-                        down = {}
+                        left = {},
+                        down = {},
+                        up = {}
+                },
+
+                animation = { 
+                        direction = "right",
+                        idle = true,
+                        frame = 1,
+                        max_frames = 8,
+                        speed = 20,
+                        timer = 0.2
                 }
+
 }
 
         love.graphics.setBackgroundColor(0.5, 0.5, 1, 1)
 
-        for i = 1, ghost.sprite.sheet_height, ghost.sprite.height do  
-                quads.stationary[i] = love.graphics.newQuad(
-                ghost.x, 
-                ghost.y, 
+        local counter = 1
+        for i = 0, ghost.sprite.height * 4, ghost.sprite.height do 
+                table.insert(ghost.quads.right, counter, love.graphics.newQuad(
+                ghost.sprite.width, 
+                i, 
                 ghost.sprite.sheet_width, 
                 ghost.sprite.sheet_height, 
                 ghost.sprite.width, 
                 ghost.sprite.height
-                )
-        end
+                ))
 
+                table.insert(ghost.quads.left, counter, love.graphics.newQuad(
+                ghost.sprite.width * 2, 
+                i, 
+                ghost.sprite.sheet_width, 
+                ghost.sprite.sheet_height, 
+                ghost.sprite.width, 
+                ghost.sprite.height
+                ))
+
+                table.insert(ghost.quads.down, counter, love.graphics.newQuad(
+                ghost.sprite.width * 3, 
+                i, 
+                ghost.sprite.sheet_width, 
+                ghost.sprite.sheet_height, 
+                ghost.sprite.width, 
+                ghost.sprite.height
+                ))
+
+                table.insert(ghost.quads.up, counter, love.graphics.newQuad(
+                ghost.sprite.width * 4, 
+                i, 
+                ghost.sprite.sheet_width, 
+                ghost.sprite.sheet_height, 
+                ghost.sprite.width, 
+                ghost.sprite.height
+                ))
+
+                counter = counter + 1
+        end
 end
 
 function love.update(dt)
@@ -156,5 +194,7 @@ function love.draw()
         pacman.mouth[1] * (math.pi / 180), 
         pacman.mouth[2] * (math.pi / 180)
         )
+
+        love.graphics.draw(ghost.sprite.image, ghost.quads.right[1], ghost.x, ghost.y)
 end
 
