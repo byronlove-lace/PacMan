@@ -34,8 +34,8 @@ function love.load()
                 image = love.graphics.newImage('sprites/gosth.png'),
                 sheet_width = 150,
                 sheet_height = 200,
-                height = 200 / 8,
-                width = 150 / 6
+                width = 150 / 8,
+                height = 200 / 6
         },
                 quads = {
                         right = {},
