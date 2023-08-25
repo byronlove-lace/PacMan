@@ -30,6 +30,7 @@ function love.load()
         _G.ghost = {
                 x = 300,
                 y = 200,
+                speed = 5,
 
                 sprite = {
                 image = love.graphics.newImage('sprites/gosth.png'),
@@ -51,7 +52,6 @@ function love.load()
                         idle = false,
                         frame = 1,
                         max_frames = 16,
-                        speed = 20,
                         timer = 0.2
                 }
 
@@ -142,21 +142,43 @@ function love.update(dt)
                 end
         end
 
-
         if not ghost.animation.idle then
                 ghost.animation.timer = ghost.animation.timer + dt
 
                 if ghost.animation.timer > 0.2 then
                         ghost.animation.timer = 0.1 
 
-                        ghost.animation.frame = ghost.animation.frame + 1
+                        if love.keyboard.isDown("right") then
+                                        ghost.animation.frame = 1
+                                        ghost.animation.max_frames = 4
+                                        ghost.x = ghost.x + ghost.speed
+                        end
+
+                        if love.keyboard.isDown("left") then
+                                        ghost.animation.frame = 4
+                                        ghost.animation.max_frames = 8
+                                        ghost.x = ghost.x - ghost.speed
+                        end
+
+                        if love.keyboard.isDown("down") then
+                                        ghost.animation.frame = 8
+                                        ghost.animation.max_frames = 12
+                                        ghost.y = ghost.y + ghost.speed
+                        end
+
+                        if love.keyboard.isDown("up") then
+                                        ghost.animation.frame = 12
+                                        ghost.animation.max_frames = 16
+                                        ghost.y = ghost.y - ghost.speed
+                        end
                         
+                        ghost.animation.frame = ghost.animation.frame + 1
+
                         if ghost.animation.frame > ghost.animation.max_frames then
                                 ghost.animation.frame = 1
                         end
                 end
         end
-
 end
 
 function love.draw()
