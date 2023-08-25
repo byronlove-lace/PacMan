@@ -30,13 +30,15 @@ function love.load()
         _G.ghost = {
                 x = 300,
                 y = 200,
+
                 sprite = {
                 image = love.graphics.newImage('sprites/gosth.png'),
                 sheet_width = 150,
                 sheet_height = 200,
                 width = 150 / 8,
                 height = 200 / 6
-        },
+                },
+
                 quads = {
                         right = {},
                         left = {},
@@ -46,9 +48,9 @@ function love.load()
 
                 animation = { 
                         direction = "right",
-                        idle = true,
+                        idle = false,
                         frame = 1,
-                        max_frames = 8,
+                        max_frames = 16,
                         speed = 20,
                         timer = 0.2
                 }
@@ -60,14 +62,17 @@ function love.load()
         local counter = 1
         for i = 1, 4 do
                 for j = 1, 4 do
-                        counter = counter + 1
                         ghost.quads[counter] = love.graphics.newQuad(
                         ghost.sprite.width * (i - 1), 
                         ghost.sprite.height * (j - 1), 
                         ghost.sprite.width, 
                         ghost.sprite.height, 
                         ghost.sprite.sheet_width,
-                        ghost.sprite.sheet_height)
+                        ghost.sprite.sheet_height
+                        )
+                        counter = counter + 1
+                        print(i -1)
+                        print(j - 1)
                 end
         end
 end
@@ -136,6 +141,22 @@ function love.update(dt)
                         pacman.bitetimer = 1
                 end
         end
+
+
+        if not ghost.animation.idle then
+                ghost.animation.timer = ghost.animation.timer + dt
+
+                if ghost.animation.timer > 0.2 then
+                        ghost.animation.timer = 0.1 
+
+                        ghost.animation.frame = ghost.animation.frame + 1
+                        
+                        if ghost.animation.frame > ghost.animation.max_frames then
+                                ghost.animation.frame = 1
+                        end
+                end
+        end
+
 end
 
 function love.draw()
@@ -166,6 +187,7 @@ function love.draw()
         pacman.mouth[2] * (math.pi / 180)
         )
 
-        love.graphics.draw(ghost.sprite.image, ghost.quads[2], ghost.x, ghost.y)
+        love.graphics.scale(2.0)
+        love.graphics.draw(ghost.sprite.image, ghost.quads[ghost.animation.frame], ghost.x, ghost.y)
 end
 
