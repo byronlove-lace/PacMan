@@ -40,18 +40,14 @@ function love.load()
                 height = 200 / 6
                 },
 
-                quads = {
-                        right = {},
-                        left = {},
-                        down = {},
-                        up = {}
-                },
+                quads_total = {},
 
-                animation = { 
-                        direction = "right",
-                        idle = false,
+                quads = {},
+                direction = {'left', 'right', 'down', 'up'}, 
+
+                animation = { direction = "right", idle = false,
                         frame = 1,
-                        max_frames = 16,
+                        max_frames = 4,
                         timer = 0.2
                 }
 
@@ -62,7 +58,7 @@ function love.load()
         local counter = 1
         for i = 1, 4 do
                 for j = 1, 4 do
-                        ghost.quads[counter] = love.graphics.newQuad(
+                        ghost.quads_total[counter] = love.graphics.newQuad(
                         ghost.sprite.width * (i - 1), 
                         ghost.sprite.height * (j - 1), 
                         ghost.sprite.width, 
@@ -71,10 +67,15 @@ function love.load()
                         ghost.sprite.sheet_height
                         )
                         counter = counter + 1
-                        print(i -1)
-                        print(j - 1)
                 end
         end
+
+        ghost.quads.right = {table.unpack(ghost.quads_total, 1, 4)}
+        ghost.quads.left = {table.unpack(ghost.quads_total, 5, 8)}
+        ghost.quads.down = {table.unpack(ghost.quads_total, 9, 12)}
+        ghost.quads.up = {table.unpack(ghost.quads_total, 13, 16)}
+
+        print(#ghost.quads.up)
 end
 
 function love.update(dt)
@@ -133,8 +134,7 @@ function love.update(dt)
         else
                 pacman.moving = false
         end
-
-        if pacman.moving == true then
+if pacman.moving == true then
                 if pacman.bitetimer >= 10 then
                         pacman.mouth[1] = 1
                         pacman.mouth[2] = 360
@@ -149,27 +149,23 @@ function love.update(dt)
                         ghost.animation.timer = 0.1 
 
                         if love.keyboard.isDown("right") then
-                                        ghost.animation.frame = 1
-                                        ghost.animation.max_frames = 4
-                                        ghost.x = ghost.x + ghost.speed
+                                ghost.direction = "right"
+                                ghost.x = ghost.x + ghost.speed
                         end
 
                         if love.keyboard.isDown("left") then
-                                        ghost.animation.frame = 4
-                                        ghost.animation.max_frames = 8
-                                        ghost.x = ghost.x - ghost.speed
+                                ghost.direction = "left"
+                                ghost.x = ghost.x - ghost.speed
                         end
 
                         if love.keyboard.isDown("down") then
-                                        ghost.animation.frame = 8
-                                        ghost.animation.max_frames = 12
-                                        ghost.y = ghost.y + ghost.speed
+                                ghost.direction = "down"
+                                ghost.y = ghost.y + ghost.speed
                         end
 
                         if love.keyboard.isDown("up") then
-                                        ghost.animation.frame = 12
-                                        ghost.animation.max_frames = 16
-                                        ghost.y = ghost.y - ghost.speed
+                                ghost.direction = "up"
+                                ghost.y = ghost.y - ghost.speed
                         end
                         
                         ghost.animation.frame = ghost.animation.frame + 1
@@ -210,6 +206,17 @@ function love.draw()
         )
 
         love.graphics.scale(2.0)
-        love.graphics.draw(ghost.sprite.image, ghost.quads[ghost.animation.frame], ghost.x, ghost.y)
+        if ghost.direction == "right" then
+                love.graphics.draw(ghost.sprite.image, ghost.quads.right[ghost.animation.frame], ghost.x, ghost.y)
+        end
+        if ghost.direction == "left" then
+                love.graphics.draw(ghost.sprite.image, ghost.quads.left[ghost.animation.frame], ghost.x, ghost.y)
+        end
+        if ghost.direction == "down" then
+                love.graphics.draw(ghost.sprite.image, ghost.quads.down[ghost.animation.frame], ghost.x, ghost.y)
+        end
+        if ghost.direction == "up" then
+                love.graphics.draw(ghost.sprite.image, ghost.quads.up[ghost.animation.frame], ghost.x, ghost.y)
+        end
 end
 
